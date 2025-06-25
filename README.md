@@ -14,7 +14,6 @@ Dengan kehadiran sistem rekomendasi yang tepat dan efisien, pengguna akan lebih 
 * *Preferensi Musik di Kalangan Remaja*, yang menjelaskan bahwa berbagai faktor turut memengaruhi ketertarikan seseorang terhadap genre musik tertentu.
 
 ---
-Berikut adalah penulisan ulang (rephrased) bagian **Problem Statements** agar lebih jelas, formal, dan sesuai dengan gaya penulisan akademik:
 
 ---
 
@@ -27,7 +26,6 @@ Penelitian ini dilatarbelakangi oleh beberapa permasalahan utama yang ingin dise
 2. **Bagaimana sistem dapat memberikan rekomendasi lagu secara personal kepada pengguna berdasarkan preferensi artis favorit sebelumnya, serta seberapa akurat model dalam memprediksi penilaian terhadap lagu yang belum pernah didengarkan oleh pengguna tersebut?**
 
 ---
-Berikut adalah versi yang telah diperbaiki dan ditulis dengan gaya formal akademik:
 
 ---
 
@@ -40,7 +38,6 @@ Berdasarkan rumusan masalah yang telah dikemukakan, tujuan dari penelitian ini a
 2. **Melakukan perbandingan antara beberapa pendekatan sistem rekomendasi untuk memperoleh solusi terbaik dalam konteks rekomendasi lagu yang personal dan akurat.**
 
 ---
-Berikut adalah versi yang telah diperbaiki dan disesuaikan agar konsisten, jelas, dan fokus pada topik sistem rekomendasi lagu (bukan prediksi diabetes seperti di akhir paragraf aslinya):
 
 ---
 
@@ -60,7 +57,6 @@ Proses pengembangan sistem dilakukan melalui beberapa tahapan penting, meliputi:
 Pendekatan ini diharapkan mampu memberikan rekomendasi lagu yang relevan dan personal bagi setiap pengguna.
 
 ---
-Berikut adalah versi penulisan ulang bagian **Data Understanding** dengan bahasa yang lebih baku dan terstruktur secara akademik:
 
 ---
 
@@ -80,8 +76,6 @@ Adapun variabel-variabel yang terdapat dalam dataset tersebut antara lain:
 Pemahaman terhadap struktur dan isi dari dataset ini menjadi langkah awal yang krusial dalam proses analisis, pemodelan, serta pengembangan sistem rekomendasi lagu berbasis *machine learning*.
 
 ---
-
-Berikut adalah penulisan ulang bagian ini dalam format naratif yang rapi, akademik, dan terstruktur, cocok untuk bagian *Exploratory Data Analysis (EDA)* atau *Data Cleaning* dalam laporan:
 
 ---
 ### Proses analisis data
@@ -117,8 +111,6 @@ Beberapa teknik visualisasi digunakan untuk memahami distribusi data antara lain
 
 
 ## 🧹 Persiapan Data untuk *Content-Based Filtering* dan *Collaborative Filtering*
-
-Penjelasan Anda sudah sangat baik dan runtut. Untuk keperluan dokumentasi laporan atau notebook yang lebih profesional dan akademik, berikut versi yang dirapikan dan diformalkan dengan penjelasan naratif serta komentar kode yang terstruktur:
 
 ---
 
@@ -233,6 +225,7 @@ y_train, y_val = y[:split_index], y[split_index:]
 print("Fitur (x):", x_scaled.shape)
 print("Target (Metascore y):", y.shape)
 ```
+
 ## Modeling and Result
 Proses modeling memuat proses perancangan model yang digunakan dalam rekomendasi.
 
@@ -244,3 +237,49 @@ cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
 # Menampilkan ukuran matriks kemiripan (harus persegi: jumlah lagu x jumlah lagu)
 print(f"Ukuran matriks Cosine Similarity: {cosine_sim.shape}")
 ```
+
+### Solusi - Top 5 rekomendasi pada teknik Content Base Filtering
+- Membuat DataFrame dari matriks cosine similarity
+Cosine similarity digunakan untuk mengukur tingkat kemiripan antara satu lagu dengan lagu lainnya berdasarkan vektor TF-IDF dari judul lagu. Hasil dari perhitungan ini adalah matriks simetri berukuran n x n, di mana n adalah jumlah lagu. Setiap nilai dalam matriks menunjukkan tingkat kemiripan antara dua lagu. Untuk memudahkan pencarian dan penyajian rekomendasi, matriks ini kemudian diubah menjadi sebuah DataFrame, sehingga setiap lagu dapat dihubungkan langsung dengan skor kemiripannya terhadap lagu lainnya. Baris dan kolom menggunakan nama lagu untuk kemudahan interpretasi
+
+```python
+cosine_sim_df = pd.DataFrame(
+    cosine_sim,
+    index=df_songs['Name of the Song'],
+    columns=df_songs['Name of the Song']
+)
+```
+Menampilkan ukuran dari DataFrame hasil cosine similarity
+- DataFrame ini sangat penting dalam proses rekomendasi.
+- Contoh: Jika pengguna menyukai lagu A, maka sistem dapat merekomendasikan lagu-lagu lain yang memiliki nilai cosine similarity tinggi terhadap lagu A.
+```python
+print(f" Ukuran DataFrame cosine similarity: {cosine_sim_df.shape}")
+```
+Menampilkan 10 sampel baris dan 10 kolom dari cosine similarity matrix
+```python
+cosine_sim_df.sample(n=10, axis=0).sample(n=10, axis=1)
+```
+Fungsi `song_recommendations()` digunakan untuk memberikan rekomendasi lagu-lagu yang memiliki kemiripan tertinggi berdasarkan **judul lagu**, menggunakan pendekatan **Content-Based Filtering (CBF)** dengan perhitungan **Cosine Similarity**.
+```python
+def song_recommendations(target_song, similarity_data=cosine_sim_df, items=df_songs[['Name of the Song', 'Artist']], k=5):
+    if target_song not in similarity_data.columns:
+        raise ValueError(f"Lagu '{target_song}' tidak ditemukan dalam data.")
+    similar_scores = similarity_data[target_song].sort_values(ascending=False)[1:k+1]
+    recommendations = pd.DataFrame(similar_scores).reset_index()
+    recommendations.columns = ['Name of the Song', 'Similarity Score']
+    recommendations = recommendations.merge(items, on='Name of the Song')
+    return recommendations
+```
+
+### 🎵 Hasil Rekomendasi Menggunakan *Content-Based Filtering*
+
+Melalui pendekatan *Content-Based Filtering*, sistem menghasilkan rekomendasi lagu berdasarkan kemiripan kata yang terkandung dalam judul lagu yang dicari oleh pengguna. Sistem ini akan menampilkan **5 lagu terdekat** yang memiliki kesamaan konten tertinggi dengan lagu referensi.
+
+* ![Top 5 Rekomendasi](/TR1)
+* ![Top 5 Rekomendasi](/TR2)
+* ![Top 5 Rekomendasi](/TR3)
+  
+---
+
+### Collaborative Filtering
+
