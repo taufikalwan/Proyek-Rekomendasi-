@@ -275,13 +275,201 @@ def song_recommendations(target_song, similarity_data=cosine_sim_df, items=df_so
 
 Melalui pendekatan *Content-Based Filtering*, sistem menghasilkan rekomendasi lagu berdasarkan kemiripan kata yang terkandung dalam judul lagu yang dicari oleh pengguna. Sistem ini akan menampilkan **5 lagu terdekat** yang memiliki kesamaan konten tertinggi dengan lagu referensi.
 
-* ![Top 5 Rekomendasi](TR1)
-* ![Top 5 Rekomendasi](TR2)
-* ![Top 5 Rekomendasi](TR3)
+* ![Top 5 Rekomendasi](TR1.png)
+* ![Top 5 Rekomendasi](TR2.png)
+* ![Top 5 Rekomendasi](TR3.png)
   
 ---
 
 ### Collaborative Filtering
 
+- Collaborative filtering dikembangkan menggunakan model neural network yang dibangun dengan bantuan TensorFlow dan Keras. Dalam proses ini, dibuat embedding vektor berdimensi untuk masing-masing artis dan lagu guna menangkap pola hubungan di antara identitas tersebut.
+- Kita membuat vektor angka (embedding) untuk artist dan lagu supaya model bisa memahami hubungan antar keduanya.
+- Kemudian, dilakukan perkalian antar vektor (dot product) antara embedding artist dan lagu untuk menghitung seberapa cocok keduanya.
 
+---
+Bagian ini membuat representasi vektor (*embedding*) untuk setiap **artist** dan bias-nya agar bisa dihitung kemiripannya dengan lagu.
+```python
+self.artist_embedding = layers.Embedding(
+    input_dim=num_artists,
+    output_dim=embedding_size,
+    embeddings_initializer='he_normal',
+    embeddings_regularizer=regularizers.l2(1e-6)
+)
+self.artist_bias = layers.Embedding(input_dim=num_artists, output_dim=1)
+```
+---
 
+Membuat representasi vektor (*embedding*) untuk setiap **lagu** dan bias-nya, mirip seperti artist.
+
+```python
+self.song_embedding = layers.Embedding(
+    input_dim=num_songs,
+    output_dim=embedding_size,
+    embeddings_initializer='he_normal',
+    embeddings_regularizer=regularizers.l2(1e-6)
+)
+self.song_bias = layers.Embedding(input_dim=num_songs, output_dim=1)
+```
+---
+
+Bagian ini mendefinisikan layer tambahan (Dense dan Dropout) untuk memproses hasil kombinasi embedding dan skor user.
+```python
+self.concat_dense = layers.Dense(64, activation='relu')
+self.dropout = layers.Dropout(0.3)
+self.output_layer = layers.Dense(1, activation='sigmoid')  # karena target sudah dinormalisasi
+```
+---
+
+Mengambil input artist, lagu, dan skor user (dalam bentuk float).
+```python
+artist_input = tf.cast(inputs[:, 0], tf.int32)
+song_input = tf.cast(inputs[:, 1], tf.int32)
+user_score = tf.expand_dims(inputs[:, 2], axis=1)
+```
+---
+
+Mengambil representasi vektor dari artist dan lagu berdasarkan ID input.
+```python
+artist_vec = self.artist_embedding(artist_input)
+song_vec = self.song_embedding(song_input)
+artist_bias = self.artist_bias(artist_input)
+song_bias = self.song_bias(song_input)
+```
+---
+Mengalikan vektor artist dan lagu secara elemen (element-wise) lalu menjumlahkannya untuk mendapat skor kecocokan.
+```python
+dot = tf.reduce_sum(artist_vec * song_vec, axis=1, keepdims=True)
+x = dot + artist_bias + song_bias
+```
+---
+
+Menggabungkan skor prediksi dengan skor asli dari user.
+
+```python
+combined = tf.concat([x, user_score], axis=1)
+```
+---
+
+Memproses hasil gabungan untuk menghasilkan skor akhir antara 0–1.
+
+```python
+x = self.concat_dense(combined)
+x = self.dropout(x)
+output = self.output_layer(x)
+```
+---
+Model ini dikompilasi menggunakan MSE (Mean Squared Error) sebagai fungsi kerugian (loss function), dan RMSE (Root Mean Squared Error) digunakan sebagai metrik untuk mengevaluasi performa model.
+```python
+model.compile(
+    loss=tf.keras.losses.MeanSquaredError(),
+    optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
+    metrics=[tf.keras.metrics.RootMeanSquaredError()]
+)
+```
+Dalam proses pelatihan model rekomendasi, digunakan beberapa teknik callback yang bertujuan untuk meningkatkan efisiensi dan stabilitas model:
+
+1. **Custom Callback (`myCallback`)**
+
+- Menghentikan training secara otomatis jika **RMSE** turun di bawah **0.05**.
+- Ini membantu **menghindari overtraining** saat model sudah cukup baik.
+```python
+class myCallback(tf.keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs={}):
+        rmse = logs.get('root_mean_squared_error')
+        if rmse is not None and rmse < 0.05:
+            print(f"\nRMSE telah mencapai < 0.05! (RMSE: {rmse:.4f})")
+            self.model.stop_training = True
+callbacks = myCallback()
+```
+
+2. **EarlyStopping**
+   - Memantau metrik `val_root_mean_squared_error`.
+   - Jika tidak ada peningkatan selama **10 epoch berturut-turut**, training akan dihentikan.
+   - Opsi `restore_best_weights=True` memastikan bobot terbaik dikembalikan.
+```python
+     early_stop = tf.keras.callbacks.EarlyStopping(
+    monitor='val_root_mean_squared_error',
+    patience=10,
+    restore_best_weights=True,
+    verbose=1
+)
+```
+
+3. **ReduceLROnPlateau**
+   - Mengurangi *learning rate* sebesar 50% jika `val_loss` stagnan selama **5 epoch**.
+   - Membantu model melanjutkan pelatihan dengan pembaruan parameter yang lebih halus (fine-tuning).
+```python
+   history = model.fit(
+    x = x_train,
+    y = y_train,
+    batch_size = 64,
+    epochs = 100,
+    callbacks=[callbacks, early_stop, reduce_lr],
+    validation_data = (x_val, y_val),
+    verbose=1
+)
+```
+#### Parameter Pelatihan:
+* **Batch size:** 64
+* **Epochs maksimum:** 100
+* **Data:** Sudah dibagi menjadi training dan validation
+
+### Solusi - Top 5 rekomendasi pada teknik Collaborative Filtering
+
+```python
+def rekomendasi_lagu_untuk_artis(model, df_songs, artist_encoder, song_encoder, userscore_encoder, top_k=5):
+   
+    artist_id = df_songs.Artist.sample(1).iloc[0]
+    songs_by_artist = df_songs[df_songs.Artist == artist_id]
+    songs_not_by_artist = df_songs[~df_songs['Name of the Song'].isin(songs_by_artist['Name of the Song'].values)]
+    songs_not_by_artist_ids = songs_not_by_artist['Name of the Song'].values
+
+    artist_song_array = np.hstack(
+        ([[artist_id]] * len(songs_not_by_artist_ids), songs_not_by_artist_ids.reshape(-1, 1))
+    )
+
+    original_user_scores = userscore_encoder.inverse_transform(df_songs['User Score'] - 1)
+    default_user_score = original_user_scores.mean()
+
+    min_metascore = df_songs_encode['Metascore'].min()
+    max_metascore = df_songs_encode['Metascore'].max()
+    scaled_default_user_score = (default_user_score - min_metascore) / (max_metascore - min_metascore)
+
+    user_scores = np.full((artist_song_array.shape[0], 1), scaled_default_user_score)
+
+    input_array = np.hstack((artist_song_array, user_scores))
+
+    ratings = model.predict(input_array).flatten()
+
+    top_ratings_indices = ratings.argsort()[-top_k:][::-1]
+    recommended_song_ids = songs_not_by_artist_ids[top_ratings_indices]
+    recommended_scores = ratings[top_ratings_indices]
+
+    artist_name = artist_encoder.inverse_transform([artist_id - 1])[0] 
+    recommended_song_titles = song_encoder.inverse_transform(recommended_song_ids.astype(int) - 1)
+```
+Pada tahap ini, sistem rekomendasi digunakan untuk **memprediksi lagu-lagu yang relevan bagi seorang artis tertentu**, berdasarkan histori lagu-lagu yang pernah dibuat artis tersebut dan pola hubungan dengan lagu-lagu lainnya.
+
+1. **Pilih Artis Secara Acak**
+
+   * Diambil satu `Artist ID` secara acak dari dataset.
+
+2. **Identifikasi Lagu**
+
+   * Dipisahkan lagu-lagu yang **pernah** dibuat oleh artis tersebut.
+   * Dihitung kemungkinan kecocokan terhadap **lagu-lagu yang belum pernah dibuat** oleh artis itu.
+
+3. **Prediksi dengan Model**
+
+   * Model `RecommenderNet` digunakan untuk memprediksi **skor kecocokan** antara artis dan setiap lagu.
+
+4. **Rekomendasi Lagu**
+
+   * Diambil **5 lagu teratas** dengan skor tertinggi.
+   * Lagu ditampilkan bersama nilai skor prediksi (0–1).
+
+#### Output
+
+* Tampilkan **lagu-lagu terbaik** dari artis berdasarkan `Metascore`.
+* Berikan **5 lagu rekomendasi** yang belum pernah dibuat oleh artis, disertai prediksi skor.
