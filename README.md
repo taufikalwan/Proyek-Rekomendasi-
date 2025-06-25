@@ -51,6 +51,21 @@ Pendekatan ini diharapkan mampu memberikan pengalaman yang lebih personal kepada
 
 ## Data Understanding
 
+### Informasi Dataset
+
+- **Sumber Dataset**:  
+  Dataset diperoleh dari Kaggle dan dapat diakses melalui tautan berikut:  
+  [All Songs Rating Review Dataset – Kaggle](https://www.kaggle.com/datasets/deependraverma13/all-songs-rating-review)
+
+- **Format Dataset**:  
+  Dataset tersedia dalam format `.csv` yang dapat langsung digunakan untuk proses eksplorasi, analisis, maupun pembuatan sistem rekomendasi.
+
+  
+- Proses pengumpulan data didasarkan pada dataset **"All Songs Rating Review"**.
+- Dataset terdiri dari **7 atribut kolom** dan **198.126 baris data**.
+- Dalam menjawab pertanyaan bisnis yang telah ditentukan, fokus utama pengumpulan dan analisis data akan dilakukan pada file **`song.csv`**.
+- Karena data disimpan dalam format `.csv`, maka untuk keperluan pemanggilan data dan visualisasi tabel, diperlukan penggunaan **library `pandas`**.
+
 Adapun variabel-variabel yang terdapat dalam dataset tersebut antara lain:
 
 * **Name of the Song**: Berisi nama atau judul dari masing-masing lagu.
