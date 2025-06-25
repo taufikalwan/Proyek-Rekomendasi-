@@ -1,100 +1,57 @@
-# Laporan Proyek Sistem Rekomendasi - TAUFIK ALWAN
-
-Di era digital saat ini, teknologi *machine learning* menjadi salah satu pilar utama dalam proses pengolahan dan analisis data. Teknologi ini mampu memberikan solusi efektif dalam berbagai permasalahan, termasuk dalam sistem rekomendasi. Sistem rekomendasi bertujuan untuk memberikan saran atau pilihan yang paling sesuai bagi pengguna, berdasarkan preferensi atau riwayat interaksi mereka sebelumnya.
-
-Teknologi rekomendasi telah banyak diimplementasikan di berbagai platform, seperti media sosial yang menyajikan konten sesuai minat pengguna, maupun marketplace yang menawarkan produk berdasarkan preferensi pembeli. Perusahaan besar seperti Amazon, Netflix, dan Spotify juga telah mengadopsi sistem rekomendasi dalam skala global untuk meningkatkan pengalaman pengguna mereka.
-
-Proyek ini bertujuan untuk mengembangkan model sistem rekomendasi lagu yang mampu memberikan saran musik yang relevan kepada pengguna. Pengembangan model ini berfokus pada dua pendekatan utama dalam *machine learning*, yaitu *Content-Based Filtering* dan *Collaborative Filtering*. Proyek ini dianggap penting karena dapat membantu pengguna dalam memilih lagu berdasarkan kebiasaan mendengarkan mereka sebelumnya, sekaligus membandingkan efektivitas kedua pendekatan dalam menghasilkan rekomendasi yang paling akurat.
-
-Dengan kehadiran sistem rekomendasi yang tepat dan efisien, pengguna akan lebih mudah dalam mengambil keputusan untuk memilih lagu yang ingin mereka dengarkan, sehingga pengalaman penggunaan aplikasi menjadi lebih personal dan menyenangkan. Penelitian ini juga merujuk pada beberapa studi sebelumnya yang relevan, antara lain:
-
-* *Menakar Preferensi Musik di Kalangan Remaja: Antara Musik Populer dan Musik Klasik*, yang menyoroti kecenderungan remaja dalam memilih genre musik tertentu.
-* *Pengembangan Sistem Rekomendasi Berbasis Kecerdasan Buatan untuk Meningkatkan Pengalaman Pengguna di Platform E-Commerce*, yang menekankan pentingnya penerapan AI dalam meningkatkan kenyamanan pengguna di e-commerce.
-* *Pemanfaatan Sistem Rekomendasi Menggunakan Content-Based Filtering pada Hotel di Palangka Raya*, yang menunjukkan efektivitas pendekatan Content-Based dalam menyajikan rekomendasi akurat.
-* *Preferensi Musik di Kalangan Remaja*, yang menjelaskan bahwa berbagai faktor turut memengaruhi ketertarikan seseorang terhadap genre musik tertentu.
-
----
----
-
-### 🔍 Kelebihan dan Kekurangan Content-Based Filtering (CBF) & Collaborative Filtering (CF)
-
-#### Content-Based Filtering (CBF)
-
-**Kelebihan:**
-
-* Tidak bergantung pada data interaksi pengguna seperti rating, cukup menggunakan informasi dari konten lagu (misalnya judul).
-* Tetap dapat memberikan rekomendasi meskipun hanya ada satu data lagu (cocok untuk pengguna baru).
-* Lebih mudah diterapkan dan prosesnya relatif cepat.
-
-**Kekurangan:**
-
-* Hanya merekomendasikan lagu-lagu yang serupa dengan yang telah dikenal, sehingga kurang mampu memahami preferensi musik yang lebih bervariasi.
-* Bergantung sepenuhnya pada fitur konten seperti judul lagu, yang bisa sangat terbatas dalam menggambarkan keseluruhan karakteristik lagu.
+# 🎧 Laporan Proyek Sistem Rekomendasi Lagu Berbasis Content-Based Filtering  
+**Nama:** Taufik Alwan  
 
 ---
 
-#### Collaborative Filtering (CF)
+## 📘 Business Understanding
 
-**Kelebihan:**
+### 📌 Latar Belakang
+Di tengah pesatnya pertumbuhan konten digital, kebutuhan akan sistem yang mampu menyajikan informasi yang relevan menjadi sangat penting. Salah satu solusi dari permasalahan ini adalah sistem rekomendasi, yang dirancang untuk memberikan saran konten secara otomatis kepada pengguna berdasarkan preferensi, histori interaksi, atau kemiripan konten. Dalam konteks musik digital, sistem rekomendasi membantu pengguna menemukan lagu-lagu yang sesuai dengan selera mereka tanpa harus mencarinya secara manual.
 
-* Dapat mengenali pola preferensi pengguna dari data interaksi (misalnya hubungan antara artis dan lagu melalui rating).
-* Rekomendasi yang dihasilkan lebih personal karena mempertimbangkan hubungan antar pengguna dan item.
-* Mampu merekomendasikan lagu-lagu yang secara konten tidak mirip, namun disukai oleh pengguna dengan selera serupa.
+### ⚠️ Permasalahan Bisnis
+Tanpa adanya sistem rekomendasi, pengguna akan kesulitan dalam menelusuri dan menemukan lagu yang sesuai dengan selera mereka dari jutaan konten yang tersedia. Hal ini dapat menurunkan tingkat kepuasan pengguna dan menyebabkan mereka beralih ke platform lain yang menawarkan pengalaman yang lebih personal.
 
-**Kekurangan:**
+### 🎯 Tujuan Proyek
+Proyek ini bertujuan untuk membangun sebuah sistem rekomendasi lagu yang efektif dan akurat menggunakan pendekatan *Content-Based Filtering*. Sistem ini diharapkan mampu merekomendasikan lagu-lagu baru yang mirip dengan lagu yang sebelumnya disukai oleh pengguna berdasarkan karakteristik kontennya, seperti nama lagu atau genre.
 
-* Memerlukan data interaksi dalam jumlah yang besar agar model bisa bekerja dengan baik.
-* Lebih kompleks dalam penerapan, karena membutuhkan proses pelatihan model yang lebih rumit seperti penggunaan neural network.
-
----
----
-
-## ⚠️ Rumusan Masalah
-
-Penelitian ini dilatarbelakangi oleh beberapa permasalahan utama yang ingin diselesaikan, yaitu:
-
-1. **Bagaimana sistem rekomendasi dapat memberikan saran lagu yang relevan berdasarkan kemiripan konten, seperti judul lagu, dan sejauh mana relevansi tersebut tercermin melalui hasil evaluasi model?**
-
-2. **Bagaimana sistem dapat memberikan rekomendasi lagu secara personal kepada pengguna berdasarkan preferensi artis favorit sebelumnya, serta seberapa akurat model dalam memprediksi penilaian terhadap lagu yang belum pernah didengarkan oleh pengguna tersebut?**
+### 💼 Manfaat Bisnis
+Penerapan sistem rekomendasi dalam aplikasi streaming musik atau platform audio lainnya memiliki sejumlah manfaat bisnis, antara lain:
+- **Meningkatkan keterlibatan pengguna**, karena mereka merasa konten yang disajikan lebih relevan dan personal.
+- **Memperpanjang waktu penggunaan aplikasi**, karena pengguna menemukan lagu baru tanpa usaha tambahan.
+- **Meningkatkan loyalitas dan retensi pengguna**, yang berdampak langsung pada pertumbuhan platform dan keuntungan bisnis secara keseluruhan.
 
 ---
 
----
-
-## ✨ Tujuan Penelitian
+## 🎯 Tujuan Penelitian
 
 Berdasarkan rumusan masalah yang telah dikemukakan, tujuan dari penelitian ini adalah sebagai berikut:
 
-1. **Menentukan model sistem rekomendasi yang efektif dalam memberikan saran lagu yang relevan kepada pengguna.**
-
-2. **Melakukan perbandingan antara beberapa pendekatan sistem rekomendasi untuk memperoleh solusi terbaik dalam konteks rekomendasi lagu yang personal dan akurat.**
-
----
+1. **Mengembangkan sistem rekomendasi lagu menggunakan pendekatan Content-Based Filtering.**  
+2. **Menganalisis performa sistem dalam memberikan saran lagu yang relevan berdasarkan kemiripan konten.**
 
 ---
 
-## 💡 Pendekatan Solusi
+## 🧠 Pendekatan Solusi
 
-Untuk menjawab permasalahan yang telah diidentifikasi, penelitian ini menggunakan pendekatan berbasis *machine learning* dalam membangun sistem rekomendasi lagu. Dua metode utama yang digunakan adalah **Content-Based Filtering** dan **Collaborative Filtering**.
-
-Pada pendekatan *Collaborative Filtering*, penelitian ini memanfaatkan teknik *neural network* guna meningkatkan kemampuan model dalam memahami preferensi pengguna berdasarkan interaksi sebelumnya. Sementara itu, *Content-Based Filtering* digunakan untuk merekomendasikan lagu berdasarkan kemiripan konten, seperti kemiripan judul lagu atau atribut lainnya.
+Untuk menjawab permasalahan yang telah diidentifikasi, penelitian ini menggunakan pendekatan *Content-Based Filtering* dalam membangun sistem rekomendasi lagu.  
+Sistem ini bekerja dengan menganalisis karakteristik dari lagu-lagu yang pernah disukai oleh pengguna, dan kemudian merekomendasikan lagu lain yang memiliki kemiripan konten. Kemiripan ini dapat dihitung menggunakan teknik seperti **TF-IDF**, **cosine similarity**, atau metode representasi teks lainnya pada fitur seperti **judul lagu**.
 
 Proses pengembangan sistem dilakukan melalui beberapa tahapan penting, meliputi:
 
-* Pengumpulan dan pengolahan data,
-* Eksplorasi dan ekstraksi fitur,
-* Pemilihan serta penerapan algoritma rekomendasi, dan
-* Evaluasi performa model untuk memastikan tingkat akurasi dan relevansi rekomendasi yang optimal.
+- Pengumpulan dan pengolahan data,  
+- Ekstraksi dan representasi fitur lagu,  
+- Penghitungan kesamaan antar konten, dan  
+- Evaluasi performa rekomendasi menggunakan metrik yang sesuai.
 
-Pendekatan ini diharapkan mampu memberikan rekomendasi lagu yang relevan dan personal bagi setiap pengguna.
-
----
+Pendekatan ini diharapkan mampu memberikan pengalaman yang lebih personal kepada pengguna dalam menemukan musik yang sesuai dengan selera mereka.
 
 ---
 
-## 📑 Pemahaman Data (*Data Understanding*)
+---
 
-Dataset yang digunakan dalam penelitian ini merupakan kumpulan data lagu yang terorganisir dengan baik dan diperoleh dari platform **Kaggle** dengan nama **"Song Dataset"**. Dataset ini berisi informasi penting mengenai lagu-lagu yang dapat digunakan untuk membangun sistem rekomendasi.
+## Data Understanding
+
+
 
 Adapun variabel-variabel yang terdapat dalam dataset tersebut antara lain:
 
@@ -108,10 +65,7 @@ Adapun variabel-variabel yang terdapat dalam dataset tersebut antara lain:
 Pemahaman terhadap struktur dan isi dari dataset ini menjadi langkah awal yang krusial dalam proses analisis, pemodelan, serta pengembangan sistem rekomendasi lagu berbasis *machine learning*.
 
 ---
-
 ---
-### Proses analisis data
-## 🔍 Eksplorasi Awal dan Pembersihan Data
 
 Untuk memahami kondisi awal dataset, beberapa fungsi eksploratif pada *Pandas* digunakan:
 
@@ -119,8 +73,6 @@ Untuk memahami kondisi awal dataset, beberapa fungsi eksploratif pada *Pandas* d
 * `df.isnull().sum()` digunakan untuk mengidentifikasi jumlah nilai kosong (*missing values*) pada setiap kolom.
 * `df.duplicated().sum()` digunakan untuk memeriksa jumlah duplikasi baris secara keseluruhan dalam dataset.
 * `df.duplicated(subset=['Name of the Song']).sum()` mengecek jumlah lagu yang memiliki judul yang sama, untuk mengetahui potensi duplikasi berdasarkan nama lagu.
-
-### 📌 Hasil Pengamatan
 
 Berdasarkan eksplorasi awal, diperoleh hasil sebagai berikut:
 
@@ -141,12 +93,10 @@ Beberapa teknik visualisasi digunakan untuk memahami distribusi data antara lain
 - **Histogram**: Digunakan untuk melihat distribusi frekuensi data dalam tiap variabel.
 ![Histogram](histogram.png)
 
-
-## 🧹 Persiapan Data untuk *Content-Based Filtering* dan *Collaborative Filtering*
-
 ---
-
-Sebelum masuk ke tahap pemodelan, data perlu dipersiapkan dan dibersihkan agar sesuai dengan kebutuhan algoritma *machine learning*, khususnya untuk sistem rekomendasi berbasis **Content-Based Filtering** dan **Collaborative Filtering**.
+### Data Preparation.
+---
+Sebelum masuk ke tahap pemodelan, data perlu dipersiapkan dan dibersihkan agar sesuai dengan kebutuhan algoritma *machine learning*, khususnya untuk sistem rekomendasi berbasis **Content-Based Filtering** 
 
 ### 🔧 Langkah-langkah Data Preparation:
 
@@ -182,10 +132,12 @@ display(df_songs_encode.head())
 * Proses pembersihan kolom `Artist` bertujuan menghindari kesalahan dalam analisis atau pencocokan nama artis.
 * Dengan data yang bersih dan terstruktur, proses *Content-Based Filtering* dan *Collaborative Filtering* dapat dilakukan secara optimal dan akurat.
 ---
-### 1. Data Preparation Content Base Filtering
+---
 Data preparation untuk Content Base Filtering didasari pada :
+
 - Membuang atribut **Description, Unnamed: 0, dan Date of Release**. Tujuan dari pembuangan atribut ini untuk mempersiapkan atribut yang akan digunakan pada proses CBF.
 - TF-IDF digunakan untuk mengubah judul lagu menjadi representasi numerik.
+  
 ```python
 # Salin ulang data hasil pembersihan nama artis
 df_songs = df_songs_encode.copy()
@@ -199,6 +151,28 @@ df_songs.drop(columns=[col for col in drop_columns if col in df_songs.columns], 
 # Tampilkan hasil
 display(df_songs)
 ```
+
+Langkah-langkah berikut dilakukan untuk membersihkan dan menyederhanakan dataset sebelum masuk ke tahap pembuatan sistem rekomendasi berbasis *Content-Based Filtering*:
+
+**Menyalin Data Bersih**  
+   Data hasil pembersihan kolom 'Artist' (`df_songs_encode`) disalin kembali ke DataFrame `df_songs`. Hal ini bertujuan agar proses lanjutan tidak mengubah data asli, serta memastikan data yang digunakan adalah versi yang telah dibersihkan.
+
+**Menentukan Kolom yang Akan Dihapus**  
+   Kolom-kolom seperti:
+   - `Description`: berisi teks panjang yang tidak dibutuhkan dalam pemodelan,
+   - `Unnamed: 0`: kolom auto-generated dari file CSV,
+   - `Date of Release`: kolom waktu yang tidak dianalisis dalam sistem ini,
+
+   dikumpulkan ke dalam list `drop_columns` untuk dihapus.
+
+**Menghapus Kolom dengan Aman**  
+   Kolom-kolom dalam `drop_columns` dihapus dari DataFrame hanya jika kolom tersebut memang ada. Ini mencegah terjadinya error saat kolom tidak ditemukan.
+
+**Menampilkan Data yang Telah Dibersihkan**  
+   Data akhir ditampilkan untuk memastikan hasilnya sudah sesuai, hanya menyisakan kolom-kolom penting yang akan digunakan untuk proses rekomendasi, seperti `Title` dan `Artist`.
+
+---
+
 - **`TfidfVectorizer(stop_words='english')`**  
   Digunakan untuk menghilangkan kata-kata umum (seperti "the", "of", "and") agar hanya kata penting yang digunakan sebagai fitur.
 
@@ -210,6 +184,7 @@ display(df_songs)
 
 - **`tfidf_matrix.todense()`**  
   Mengubah representasi sparse matrix (hemat memori) ke dense matrix agar dapat dilihat dan dianalisis secara eksplisit.
+  
 ```python
 # Inisialisasi TF-IDF Vectorizer
 tfidf_vectorizer = TfidfVectorizer(stop_words='english')  # stop_words digunakan untuk menghilangkan kata umum yang tidak penting
@@ -220,48 +195,9 @@ tfidf_matrix = tfidf_vectorizer.fit_transform(df_songs['Name of the Song'])
 # Menampilkan ukuran matriks TF-IDF (baris = jumlah lagu, kolom = jumlah fitur unik dari judul lagu)
 print(f"Ukuran TF-IDF Matrix: {tfidf_matrix.shape}")
 ```
-### 2. Data Preparation Collaborative Filtering
-Pada tahap ini, kita melakukan serangkaian proses transformasi dan normalisasi terhadap dataset lagu df_songs untuk mempersiapkannya sebelum digunakan dalam model prediktif seperti regresi atau neural network.
-
-Langkah-langkah yang Dilakukan:
-Normalisasi Nilai Rating (Metascore) 🎵
-
-Skor metascore setiap lagu dinormalisasi ke dalam rentang 0 hingga 1 menggunakan min-max scaling.
-Tujuan: agar model tidak bias terhadap skala nilai asli yang besar dan menjaga kestabilan selama pelatihan.
-Penggabungan Fitur (X) 🎤🎶
-
-Kolom Artist dan Name of the Song digunakan sebagai fitur numerik setelah label encoding sebelumnya.
-Digabung menjadi satu array x yang kemudian dinormalisasi menggunakan MinMaxScaler agar semua fitur berada dalam skala yang seragam.
-Pemisahan Dataset 📊
-
-Dataset dibagi menjadi 80% data latih dan 20% data validasi.
-Hal ini penting untuk mengevaluasi kinerja model secara obyektif terhadap data yang belum pernah dilihat sebelumnya
-```python
-# Target tetap menggunakan Metascore
-min_rating = df_songs['Metascore'].min()
-max_rating = df_songs['Metascore'].max()
-y = df_songs['Metascore'].apply(lambda val: (val - min_rating) / (max_rating - min_rating)).values
-
-# Tambahkan User Score sebagai fitur tambahan
-x = df_songs[['Artist', 'Name of the Song', 'User Score']].values
-
-# Normalisasi semua fitur
-scaler_x = MinMaxScaler()
-x_scaled = scaler_x.fit_transform(x)
-
-# Split
-split_index = int(0.8 * len(df_songs))
-x_train, x_val = x_scaled[:split_index], x_scaled[split_index:]
-y_train, y_val = y[:split_index], y[split_index:]
-
-print("Fitur (x):", x_scaled.shape)
-print("Target (Metascore y):", y.shape)
-```
 
 ## Modeling and Result
 Proses modeling memuat proses perancangan model yang digunakan dalam rekomendasi.
-
-### Content Base Filtering
 
 ```python
 # Menghitung Cosine Similarity dari matrix TF-IDF
@@ -313,203 +249,7 @@ Melalui pendekatan *Content-Based Filtering*, sistem menghasilkan rekomendasi la
   
 ---
 
-### Collaborative Filtering
-
-- Collaborative filtering dikembangkan menggunakan model neural network yang dibangun dengan bantuan TensorFlow dan Keras. Dalam proses ini, dibuat embedding vektor berdimensi untuk masing-masing artis dan lagu guna menangkap pola hubungan di antara identitas tersebut.
-- Kita membuat vektor angka (embedding) untuk artist dan lagu supaya model bisa memahami hubungan antar keduanya.
-- Kemudian, dilakukan perkalian antar vektor (dot product) antara embedding artist dan lagu untuk menghitung seberapa cocok keduanya.
-
----
-Bagian ini membuat representasi vektor (*embedding*) untuk setiap **artist** dan bias-nya agar bisa dihitung kemiripannya dengan lagu.
-```python
-self.artist_embedding = layers.Embedding(
-    input_dim=num_artists,
-    output_dim=embedding_size,
-    embeddings_initializer='he_normal',
-    embeddings_regularizer=regularizers.l2(1e-6)
-)
-self.artist_bias = layers.Embedding(input_dim=num_artists, output_dim=1)
-```
----
-
-Membuat representasi vektor (*embedding*) untuk setiap **lagu** dan bias-nya, mirip seperti artist.
-
-```python
-self.song_embedding = layers.Embedding(
-    input_dim=num_songs,
-    output_dim=embedding_size,
-    embeddings_initializer='he_normal',
-    embeddings_regularizer=regularizers.l2(1e-6)
-)
-self.song_bias = layers.Embedding(input_dim=num_songs, output_dim=1)
-```
----
-
-Bagian ini mendefinisikan layer tambahan (Dense dan Dropout) untuk memproses hasil kombinasi embedding dan skor user.
-```python
-self.concat_dense = layers.Dense(64, activation='relu')
-self.dropout = layers.Dropout(0.3)
-self.output_layer = layers.Dense(1, activation='sigmoid')  # karena target sudah dinormalisasi
-```
----
-
-Mengambil input artist, lagu, dan skor user (dalam bentuk float).
-```python
-artist_input = tf.cast(inputs[:, 0], tf.int32)
-song_input = tf.cast(inputs[:, 1], tf.int32)
-user_score = tf.expand_dims(inputs[:, 2], axis=1)
-```
----
-
-Mengambil representasi vektor dari artist dan lagu berdasarkan ID input.
-```python
-artist_vec = self.artist_embedding(artist_input)
-song_vec = self.song_embedding(song_input)
-artist_bias = self.artist_bias(artist_input)
-song_bias = self.song_bias(song_input)
-```
----
-Mengalikan vektor artist dan lagu secara elemen (element-wise) lalu menjumlahkannya untuk mendapat skor kecocokan.
-```python
-dot = tf.reduce_sum(artist_vec * song_vec, axis=1, keepdims=True)
-x = dot + artist_bias + song_bias
-```
----
-
-Menggabungkan skor prediksi dengan skor asli dari user.
-
-```python
-combined = tf.concat([x, user_score], axis=1)
-```
----
-
-Memproses hasil gabungan untuk menghasilkan skor akhir antara 0–1.
-
-```python
-x = self.concat_dense(combined)
-x = self.dropout(x)
-output = self.output_layer(x)
-```
----
-Model ini dikompilasi menggunakan MSE (Mean Squared Error) sebagai fungsi kerugian (loss function), dan RMSE (Root Mean Squared Error) digunakan sebagai metrik untuk mengevaluasi performa model.
-```python
-model.compile(
-    loss=tf.keras.losses.MeanSquaredError(),
-    optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
-    metrics=[tf.keras.metrics.RootMeanSquaredError()]
-)
-```
-Dalam proses pelatihan model rekomendasi, digunakan beberapa teknik callback yang bertujuan untuk meningkatkan efisiensi dan stabilitas model:
-
-1. **Custom Callback (`myCallback`)**
-
-- Menghentikan training secara otomatis jika **RMSE** turun di bawah **0.05**.
-- Ini membantu **menghindari overtraining** saat model sudah cukup baik.
-```python
-class myCallback(tf.keras.callbacks.Callback):
-    def on_epoch_end(self, epoch, logs={}):
-        rmse = logs.get('root_mean_squared_error')
-        if rmse is not None and rmse < 0.05:
-            print(f"\nRMSE telah mencapai < 0.05! (RMSE: {rmse:.4f})")
-            self.model.stop_training = True
-callbacks = myCallback()
-```
-
-2. **EarlyStopping**
-   - Memantau metrik `val_root_mean_squared_error`.
-   - Jika tidak ada peningkatan selama **10 epoch berturut-turut**, training akan dihentikan.
-   - Opsi `restore_best_weights=True` memastikan bobot terbaik dikembalikan.
-```python
-     early_stop = tf.keras.callbacks.EarlyStopping(
-    monitor='val_root_mean_squared_error',
-    patience=10,
-    restore_best_weights=True,
-    verbose=1
-)
-```
-
-3. **ReduceLROnPlateau**
-   - Mengurangi *learning rate* sebesar 50% jika `val_loss` stagnan selama **5 epoch**.
-   - Membantu model melanjutkan pelatihan dengan pembaruan parameter yang lebih halus (fine-tuning).
-```python
-   history = model.fit(
-    x = x_train,
-    y = y_train,
-    batch_size = 64,
-    epochs = 100,
-    callbacks=[callbacks, early_stop, reduce_lr],
-    validation_data = (x_val, y_val),
-    verbose=1
-)
-```
-#### Parameter Pelatihan:
-* **Batch size:** 64
-* **Epochs maksimum:** 100
-* **Data:** Sudah dibagi menjadi training dan validation
-
-### Solusi - Top 5 rekomendasi pada teknik Collaborative Filtering
-
-```python
-def rekomendasi_lagu_untuk_artis(model, df_songs, artist_encoder, song_encoder, userscore_encoder, top_k=5):
-   
-    artist_id = df_songs.Artist.sample(1).iloc[0]
-    songs_by_artist = df_songs[df_songs.Artist == artist_id]
-    songs_not_by_artist = df_songs[~df_songs['Name of the Song'].isin(songs_by_artist['Name of the Song'].values)]
-    songs_not_by_artist_ids = songs_not_by_artist['Name of the Song'].values
-
-    artist_song_array = np.hstack(
-        ([[artist_id]] * len(songs_not_by_artist_ids), songs_not_by_artist_ids.reshape(-1, 1))
-    )
-
-    original_user_scores = userscore_encoder.inverse_transform(df_songs['User Score'] - 1)
-    default_user_score = original_user_scores.mean()
-
-    min_metascore = df_songs_encode['Metascore'].min()
-    max_metascore = df_songs_encode['Metascore'].max()
-    scaled_default_user_score = (default_user_score - min_metascore) / (max_metascore - min_metascore)
-
-    user_scores = np.full((artist_song_array.shape[0], 1), scaled_default_user_score)
-
-    input_array = np.hstack((artist_song_array, user_scores))
-
-    ratings = model.predict(input_array).flatten()
-
-    top_ratings_indices = ratings.argsort()[-top_k:][::-1]
-    recommended_song_ids = songs_not_by_artist_ids[top_ratings_indices]
-    recommended_scores = ratings[top_ratings_indices]
-
-    artist_name = artist_encoder.inverse_transform([artist_id - 1])[0] 
-    recommended_song_titles = song_encoder.inverse_transform(recommended_song_ids.astype(int) - 1)
-```
-Pada tahap ini, sistem rekomendasi digunakan untuk **memprediksi lagu-lagu yang relevan bagi seorang artis tertentu**, berdasarkan histori lagu-lagu yang pernah dibuat artis tersebut dan pola hubungan dengan lagu-lagu lainnya.
-
-1. **Pilih Artis Secara Acak**
-
-   * Diambil satu `Artist ID` secara acak dari dataset.
-
-2. **Identifikasi Lagu**
-
-   * Dipisahkan lagu-lagu yang **pernah** dibuat oleh artis tersebut.
-   * Dihitung kemungkinan kecocokan terhadap **lagu-lagu yang belum pernah dibuat** oleh artis itu.
-
-3. **Prediksi dengan Model**
-
-   * Model `RecommenderNet` digunakan untuk memprediksi **skor kecocokan** antara artis dan setiap lagu.
-
-4. **Rekomendasi Lagu**
-
-   * Diambil **5 lagu teratas** dengan skor tertinggi.
-   * Lagu ditampilkan bersama nilai skor prediksi (0–1).
-
-#### Output
-
-* Tampilkan **lagu-lagu terbaik** dari artis berdasarkan `Metascore`.
-* Berikan **5 lagu rekomendasi** yang belum pernah dibuat oleh artis, disertai prediksi skor.
-
-![collaborative Filltering](CL.png)  
-
 ## 🔍 Evaluation
-### Evaluasi Content Based Filtering
 ```python
 Evaluasi dilakukan dengan mengukur precision, yaitu seberapa tepat rekomendasi yang diberikan oleh model.
 Penghitungan precision ini dilakukan melalui perintah tertentu dalam kode.
@@ -602,31 +342,10 @@ Lagu target yang dipilih secara acak: Summer Of Hate
 | 5  | How I Long To Feel...   | 0.349            | Gorky’s Zygotic Mynci |
 ---
 ---
-### Evaluasi Collaborative Filtering
-Evaluasi terhadap metode Collaborative Filtering dilakukan dengan menggunakan metrik **RMSE (Root Mean Squared Error)**, yaitu dengan membandingkan nilai aktual (*y\_true*) dan hasil prediksi model (*y\_pred*).
-![RMSE](rmse.png)
 
-* **RMSE** dianggap tepat untuk mengevaluasi Collaborative Filtering karena metrik ini menghitung seberapa jauh prediksi model dari nilai sebenarnya.
-* Hasil evaluasi menunjukkan **nilai RMSE sebesar 0,1941**, yang tergolong **baik** karena berada di bawah ambang 0,2.
-* Nilai ini menunjukkan bahwa model cukup akurat dalam memprediksi skor lagu, terutama mengingat kompleksitas dan ukuran dataset yang besar dan beragam. Oleh karena itu, Collaborative Filtering dinilai efektif dalam mempelajari pola preferensi pengguna.
-
-```python
-y_pred = model.predict(x_val).flatten()
-# RMSE (Root Mean Squared Error)
-rmse = np.sqrt(mean_squared_error(y_val, y_pred))
-print(f"RMSE pada validation set: {rmse:.4f}")
-```
----
-
----
 
 ### **Kesimpulan**
 
 - Content-Based Filtering tergolong lebih mudah diimplementasikan karena hanya memanfaatkan **TF-IDF** dan **cosine similarity** untuk menghitung kemiripan judul lagu. Dari hasil evaluasi, metode ini menghasilkan **presisi sebesar 1.00** atau **100%**, yang menunjukkan bahwa semua rekomendasi yang diberikan sangat relevan dengan lagu target.
 
-- Sebaliknya, **Collaborative Filtering** memerlukan pendekatan yang lebih kompleks, termasuk penggunaan **model neural network**. Meskipun begitu, hasil evaluasi menunjukkan bahwa metode ini dapat mencapai nilai **RMSE sebesar 1.941**, yang mencerminkan bahwa masih terdapat selisih yang cukup besar antara prediksi dan nilai sebenarnya.
-
-- Content-Based Filtering memiliki keterbatasan dalam menangkap preferensi pengguna secara keseluruhan, karena hanya mengandalkan informasi dari konten lagu. Namun, dengan presisi sempurna, metode ini tetap sangat andal dalam memberikan rekomendasi lagu yang mirip. Di sisi lain, Collaborative Filtering lebih cocok digunakan pada sistem dengan jumlah pengguna dan interaksi yang besar karena mampu mengenali pola kesukaan secara kolektif.
-
-- Secara keseluruhan, **Content-Based Filtering unggul dalam akurasi konten**, sementara **Collaborative Filtering menawarkan potensi jangka panjang dalam memahami preferensi pengguna secara mendalam**, meskipun membutuhkan data dan pelatihan yang lebih kompleks.
 
