@@ -275,11 +275,13 @@ def song_recommendations(target_song, similarity_data=cosine_sim_df, items=df_so
 
 Melalui pendekatan *Content-Based Filtering*, sistem menghasilkan rekomendasi lagu berdasarkan kemiripan kata yang terkandung dalam judul lagu yang dicari oleh pengguna. Sistem ini akan menampilkan **5 lagu terdekat** yang memiliki kesamaan konten tertinggi dengan lagu referensi.
 
-* ![Top 5 Rekomendasi](/TR1)
-* ![Top 5 Rekomendasi](/TR2)
-* ![Top 5 Rekomendasi](/TR3)
+* ![Top 5 Rekomendasi](TR1)
+* ![Top 5 Rekomendasi](TR2)
+* ![Top 5 Rekomendasi](TR3)
   
 ---
 
 ### Collaborative Filtering
+
+
 
