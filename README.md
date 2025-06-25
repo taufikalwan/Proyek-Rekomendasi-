@@ -51,8 +51,6 @@ Pendekatan ini diharapkan mampu memberikan pengalaman yang lebih personal kepada
 
 ## Data Understanding
 
-
-
 Adapun variabel-variabel yang terdapat dalam dataset tersebut antara lain:
 
 * **Name of the Song**: Berisi nama atau judul dari masing-masing lagu.
@@ -94,7 +92,7 @@ Beberapa teknik visualisasi digunakan untuk memahami distribusi data antara lain
 ![Histogram](histogram.png)
 
 ---
-### Data Preparation.
+## Data Preparation.
 ---
 Sebelum masuk ke tahap pemodelan, data perlu dipersiapkan dan dibersihkan agar sesuai dengan kebutuhan algoritma *machine learning*, khususnya untuk sistem rekomendasi berbasis **Content-Based Filtering** 
 
@@ -296,7 +294,7 @@ def presisi_untuk_lagu_acak(data_lagu, matriks_similarity, k=3):
 ```
 ---
 
-## Penjelasan Fungsi Evaluasi Presisi Rekomendasi
+### Penjelasan Fungsi Evaluasi Presisi Rekomendasi
 
 ### 1. Fungsi `tokenisasi(teks)`
 
@@ -344,7 +342,7 @@ Lagu target yang dipilih secara acak: Summer Of Hate
 ---
 
 
-### **Kesimpulan**
+## **Kesimpulan**
 
 - Content-Based Filtering tergolong lebih mudah diimplementasikan karena hanya memanfaatkan **TF-IDF** dan **cosine similarity** untuk menghitung kemiripan judul lagu. Dari hasil evaluasi, metode ini menghasilkan **presisi sebesar 1.00** atau **100%**, yang menunjukkan bahwa semua rekomendasi yang diberikan sangat relevan dengan lagu target.
 
