@@ -14,7 +14,39 @@ Dengan kehadiran sistem rekomendasi yang tepat dan efisien, pengguna akan lebih 
 * *Preferensi Musik di Kalangan Remaja*, yang menjelaskan bahwa berbagai faktor turut memengaruhi ketertarikan seseorang terhadap genre musik tertentu.
 
 ---
+---
 
+### 🔍 Kelebihan dan Kekurangan Content-Based Filtering (CBF) & Collaborative Filtering (CF)
+
+#### Content-Based Filtering (CBF)
+
+**Kelebihan:**
+
+* Tidak bergantung pada data interaksi pengguna seperti rating, cukup menggunakan informasi dari konten lagu (misalnya judul).
+* Tetap dapat memberikan rekomendasi meskipun hanya ada satu data lagu (cocok untuk pengguna baru).
+* Lebih mudah diterapkan dan prosesnya relatif cepat.
+
+**Kekurangan:**
+
+* Hanya merekomendasikan lagu-lagu yang serupa dengan yang telah dikenal, sehingga kurang mampu memahami preferensi musik yang lebih bervariasi.
+* Bergantung sepenuhnya pada fitur konten seperti judul lagu, yang bisa sangat terbatas dalam menggambarkan keseluruhan karakteristik lagu.
+
+---
+
+#### Collaborative Filtering (CF)
+
+**Kelebihan:**
+
+* Dapat mengenali pola preferensi pengguna dari data interaksi (misalnya hubungan antara artis dan lagu melalui rating).
+* Rekomendasi yang dihasilkan lebih personal karena mempertimbangkan hubungan antar pengguna dan item.
+* Mampu merekomendasikan lagu-lagu yang secara konten tidak mirip, namun disukai oleh pengguna dengan selera serupa.
+
+**Kekurangan:**
+
+* Memerlukan data interaksi dalam jumlah yang besar agar model bisa bekerja dengan baik.
+* Lebih kompleks dalam penerapan, karena membutuhkan proses pelatihan model yang lebih rumit seperti penggunaan neural network.
+
+---
 ---
 
 ## ⚠️ Rumusan Masalah
@@ -473,3 +505,128 @@ Pada tahap ini, sistem rekomendasi digunakan untuk **memprediksi lagu-lagu yang 
 
 * Tampilkan **lagu-lagu terbaik** dari artis berdasarkan `Metascore`.
 * Berikan **5 lagu rekomendasi** yang belum pernah dibuat oleh artis, disertai prediksi skor.
+
+![collaborative Filltering](CL.png)  
+
+## 🔍 Evaluation
+### Evaluasi Content Based Filtering
+```python
+Evaluasi dilakukan dengan mengukur precision, yaitu seberapa tepat rekomendasi yang diberikan oleh model.
+Penghitungan precision ini dilakukan melalui perintah tertentu dalam kode.
+# Fungsi tokenisasi: ubah teks menjadi kumpulan kata unik (huruf kecil, tanpa tanda baca)
+def tokenisasi(teks):
+    return set(re.findall(r'\b\w+\b', teks.lower()))
+
+# Fungsi untuk mengukur presisi rekomendasi berdasarkan token judul lagu
+def presisi_untuk_lagu_acak(data_lagu, matriks_similarity, k=3):
+    # Pilih lagu target secara acak
+    lagu_target = data_lagu['Name of the Song'].drop_duplicates().sample(n=1).values[0]
+    print(f"Lagu target yang dipilih secara acak: **{lagu_target}**")
+
+    # Validasi: pastikan lagu target tersedia dalam matriks similarity
+    if lagu_target not in matriks_similarity.columns:
+        print(f" Lagu '{lagu_target}' tidak ditemukan dalam matriks similarity.")
+        return None, None
+
+    # Ambil top-k rekomendasi
+    try:
+        rekomendasi_df = song_recommendations(lagu_target, similarity_data=matriks_similarity, k=k)
+    except Exception as e:
+        print(f" Terjadi kesalahan saat mengambil rekomendasi: {e}")
+        return None, None
+
+    # Tokenisasi judul lagu target
+    token_target = tokenisasi(lagu_target)
+    if not token_target:
+        print(f" Judul lagu target '{lagu_target}' tidak memiliki token yang valid.")
+        return None, None
+
+    # Evaluasi kesamaan token dengan lagu hasil rekomendasi
+    jumlah_relevan = sum(
+        bool(token_target & tokenisasi(judul))
+        for judul in rekomendasi_df['Name of the Song']
+    )
+
+    # Hitung nilai presisi
+    presisi = jumlah_relevan / k
+    print(f"\n Presisi rekomendasi untuk lagu '{lagu_target}': **{presisi:.2f}**")
+
+    # Tambahkan kolom target ke hasil
+    rekomendasi_df.insert(0, "Judul Lagu Target", lagu_target)
+```
+---
+
+## Penjelasan Fungsi Evaluasi Presisi Rekomendasi
+
+### 1. Fungsi `tokenisasi(teks)`
+
+Fungsi ini mengubah teks menjadi kumpulan kata unik:
+
+* Semua huruf diubah menjadi huruf kecil.
+* Tanda baca dihilangkan.
+* Hasilnya adalah *set* kata.
+
+Contoh: `"I Love You!"` → `{"i", "love", "you"}`
+
+---
+
+### 2. Fungsi `presisi_untuk_lagu_acak()`
+
+Digunakan untuk menghitung **presisi rekomendasi lagu** berdasarkan kemiripan kata dalam judul lagu.
+
+Langkah-langkah prosesnya:
+
+1. Memilih **satu lagu secara acak** dari data.
+2. Memastikan lagu tersebut tersedia di **matriks similarity**.
+3. Mengambil **rekomendasi top-*k*** lagu yang paling mirip.
+4. Melakukan **tokenisasi** pada judul lagu target dan judul lagu-lagu yang direkomendasikan.
+5. Menghitung **jumlah rekomendasi yang relevan**, yaitu yang memiliki minimal satu kata yang sama dengan lagu target.
+6. Menghitung **nilai presisi** sebagai:![RMSE](presisi.png)
+7. Menampilkan nilai presisi dan tabel rekomendasi.
+
+### 🎵 **Hasil Rekomendasi Lagu Berdasarkan Kesamaan Judul**
+
+Lagu target yang dipilih secara acak: Summer Of Hate
+(**Bisa berubah2 jika dijalan kan ulang**)
+
+**Presisi rekomendasi untuk lagu ini: 1.00**
+
+#### Contoh Top-5 Lagu yang Direkomendasikan:
+
+| No | Judul Lagu Rekomendasi  | Similarity Score | Artist                |
+| -- | ----------------------- | ---------------- | --------------------- |
+| 1  | Hate                    | 0.739            | The Delgados          |
+| 2  | Summer Sun              | 0.497            | Yo La Tengo           |
+| 3  | Summer In Abaddon       | 0.440            | Pinback               |
+| 4  | Summer In The Southeast | 0.440            | Bonnie "Prince" Billy |
+| 5  | How I Long To Feel...   | 0.349            | Gorky’s Zygotic Mynci |
+---
+---
+### Evaluasi Collaborative Filtering
+Evaluasi terhadap metode Collaborative Filtering dilakukan dengan menggunakan metrik **RMSE (Root Mean Squared Error)**, yaitu dengan membandingkan nilai aktual (*y\_true*) dan hasil prediksi model (*y\_pred*).
+![RMSE](rmse.png)
+
+* **RMSE** dianggap tepat untuk mengevaluasi Collaborative Filtering karena metrik ini menghitung seberapa jauh prediksi model dari nilai sebenarnya.
+* Hasil evaluasi menunjukkan **nilai RMSE sebesar 0,1941**, yang tergolong **baik** karena berada di bawah ambang 0,2.
+* Nilai ini menunjukkan bahwa model cukup akurat dalam memprediksi skor lagu, terutama mengingat kompleksitas dan ukuran dataset yang besar dan beragam. Oleh karena itu, Collaborative Filtering dinilai efektif dalam mempelajari pola preferensi pengguna.
+
+```python
+y_pred = model.predict(x_val).flatten()
+# RMSE (Root Mean Squared Error)
+rmse = np.sqrt(mean_squared_error(y_val, y_pred))
+print(f"RMSE pada validation set: {rmse:.4f}")
+```
+---
+
+---
+
+### **Kesimpulan**
+
+- Content-Based Filtering tergolong lebih mudah diimplementasikan karena hanya memanfaatkan **TF-IDF** dan **cosine similarity** untuk menghitung kemiripan judul lagu. Dari hasil evaluasi, metode ini menghasilkan **presisi sebesar 1.00** atau **100%**, yang menunjukkan bahwa semua rekomendasi yang diberikan sangat relevan dengan lagu target.
+
+- Sebaliknya, **Collaborative Filtering** memerlukan pendekatan yang lebih kompleks, termasuk penggunaan **model neural network**. Meskipun begitu, hasil evaluasi menunjukkan bahwa metode ini dapat mencapai nilai **RMSE sebesar 1.941**, yang mencerminkan bahwa masih terdapat selisih yang cukup besar antara prediksi dan nilai sebenarnya.
+
+- Content-Based Filtering memiliki keterbatasan dalam menangkap preferensi pengguna secara keseluruhan, karena hanya mengandalkan informasi dari konten lagu. Namun, dengan presisi sempurna, metode ini tetap sangat andal dalam memberikan rekomendasi lagu yang mirip. Di sisi lain, Collaborative Filtering lebih cocok digunakan pada sistem dengan jumlah pengguna dan interaksi yang besar karena mampu mengenali pola kesukaan secara kolektif.
+
+- Secara keseluruhan, **Content-Based Filtering unggul dalam akurasi konten**, sementara **Collaborative Filtering menawarkan potensi jangka panjang dalam memahami preferensi pengguna secara mendalam**, meskipun membutuhkan data dan pelatihan yang lebih kompleks.
+
